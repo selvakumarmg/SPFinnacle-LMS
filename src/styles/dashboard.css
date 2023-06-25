@@ -25,3 +25,25 @@
   cursor: pointer;
   color: #fff;
 }
+
+.dashboard-content {
+  padding: 20px;
+}
+
+.total-leads-card {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.lead-list-table {
+  margin-bottom: 20px;
+}
+
+.create-lead-button {
+  margin-bottom: 20px;
+}
+
+.create-lead-modal .ant-modal-body {
+  padding: 20px;
+}
+

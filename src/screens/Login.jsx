@@ -62,37 +62,48 @@ const Login = () => {
       });
   };
 
-  const fetchUserDetails = async (uid,userData) => {
+  const fetchUserDetails = async (uid, userData) => {
     try {
-      console.log('UISD', uid)
+      console.log('UID', uid);
       const userCollectionsRef = collection(db, 'users');
-        const userCollectionsSnapshot = await getDocs(userCollectionsRef);
-        console.log("userDocSnap",userCollectionsRef)
-
-       const user = userCollectionsSnapshot.map(async(el) => {
-        const userDocRef = doc(collection(db, 'users'), el.id);
-        const userDocSnap = await getDoc(userDocRef);
-        return userDocSnap;
-        });
-     
-        
-        // if(uid === userDocSnap.data().uid){
-        //   message.success('LoggedIn Success')
-        //   dispatch(setAuthStatus(true));
-        //   dispatch(setUserDetails(userDocSnap.data()));
-        //   navigate('/spfinnacle-lms')
-
-        // }else{
-        //   console.log("Else")
-        //   navigate('/user-details', { state: userData });
-        // }
-
+      const userCollectionsSnapshot = await getDocs(userCollectionsRef);
+      console.log("userDocSnap", userCollectionsSnapshot);
+  
+      let existingUser = null;
+  
+      for (const docSnap of userCollectionsSnapshot.docs) {
+        const userDocData = docSnap.data();
+        if (userDocData.uid === uid) {
+          existingUser = userDocData;
+          break;
+        }
+      }
+  
+      if (existingUser) {
+        // User exists
+        message.success('Logged in successfully');
+        dispatch(setAuthStatus(true));
+        dispatch(setUserDetails(existingUser));
+        const { status } = existingUser;
+        if (status === 'pending') {
+          // User's status is pending
+          navigate('/pending-action', { state: existingUser });
+        } else {
+          // User's status is not pending
+          navigate('/spfinnacle-lms');
+        }
+      } else {
+        // New user
+        console.log("New user");
+        navigate('/user-details', { state: userData });
+      }
+  
     } catch (error) {
-      navigate('/user-details', { state: userData })
-      // message.error('Error fetching user details:', error);
-      console.log("error", error)
+      navigate('/user-details', { state: userData });
+      console.log("error", error);
     }
   };
+  
 
   const handleSignIn = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)

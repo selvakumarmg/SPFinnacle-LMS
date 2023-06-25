@@ -1,15 +1,15 @@
-import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import rootReducer from './reducer';
+import persistConfig from './persistConfig';
 
-// Thunk middleware setup
-const middleware = [...getDefaultMiddleware()];
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
-  reducer: rootReducer,
-  middleware,
-  devTools: true
-//   devTools: process.env.NODE_ENV !== 'production', // Enable Redux DevTools only in development
+  reducer: persistedReducer,
 });
 
-export default store;
+const persistor = persistStore(store);
+
+export { store, persistor };

@@ -1,29 +1,34 @@
 .pending-applications {
-    text-align: center;
-  }
-  
-  .pending-application {
-    margin-bottom: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-  }
-  
-  .application-id {
-    font-weight: bold;
-  }
-  
-  .name {
-    margin-bottom: 5px;
-  }
-  
-  .email {
-    color: #888;
-  }
-  
-  .status {
-    margin-top: 10px;
-    font-style: italic;
-    color: #555;
-  }
-  
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100vh;
+}
+
+.pending-application {
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 60%;
+}
+
+.application-id {
+  font-weight: bold;
+}
+
+.name {
+  margin-bottom: 5px;
+}
+
+.email {
+  color: #888;
+}
+
+.status {
+  margin-top: 10px;
+  width: '60%';
+  font-style: italic;
+  color: #555;
+}

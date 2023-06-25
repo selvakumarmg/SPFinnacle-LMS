@@ -19,6 +19,7 @@
     "react-router-config": "^5.1.1",
     "react-router-dom": "^6.13.0",
     "react-scripts": "5.0.1",
+    "redux-persist": "^6.0.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -27,7 +28,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "deploy": "gh-pages -d build",
-    "build-cl":"gh-pages-clean"
+    "build-cl": "gh-pages-clean"
   },
   "eslintConfig": {
     "extends": [
