@@ -19,7 +19,7 @@ const SignupForm = ({ onFinish }) => {
   };
 
   return (
-    <Form form={form} initialValues={{name:displayName,phoneNumber}} onFinish={handleSubmit} layout="vertical">
+    <Form form={form} initialValues={{name:displayName,phoneNumber:''}} onFinish={handleSubmit} layout="vertical">
       <Form.Item
         label="Name"
         name="name"
