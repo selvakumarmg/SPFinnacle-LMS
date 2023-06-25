@@ -1,0 +1,29 @@
+.pending-applications {
+    text-align: center;
+  }
+  
+  .pending-application {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .application-id {
+    font-weight: bold;
+  }
+  
+  .name {
+    margin-bottom: 5px;
+  }
+  
+  .email {
+    color: #888;
+  }
+  
+  .status {
+    margin-top: 10px;
+    font-style: italic;
+    color: #555;
+  }
+  

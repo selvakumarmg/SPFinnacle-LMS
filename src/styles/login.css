@@ -1,0 +1,85 @@
+/* login-styles.css */
+
+.login-container {
+  display: flex;
+  justify-content: center;
+  height: 100vh;
+}
+
+.left-section {
+  width: 50%;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.left-section {
+  display: flex;
+  margin: 20px;
+  flex-direction: column;
+}
+
+.left-section .h1 {
+  font-size: 24px;
+  color: white;
+}
+
+.right-section {
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.right-section .email-field {
+  width: 400px;
+}
+
+.enroll-button {
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  background-color: #1890ff;
+  color: white;
+  border: none;
+  align-self: center;
+}
+
+
+.enroll-button:hover {
+  color: white;
+}
+
+/* Styles for desktop and larger screens */
+@media (min-width: 769px) {
+  .login-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .left-section {
+    flex: 1;
+    padding: 20px;
+  }
+
+  .right-section {
+    flex: 1;
+    padding: 20px;
+  }
+}
+
+/* Styles for mobile and smaller screens */
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .left-section,
+  .right-section {
+    padding: 10px;
+  }
+}
