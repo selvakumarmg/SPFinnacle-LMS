@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/spfinnacle-lms/static/css/main.7ae86730.css",
+    "main.js": "/spfinnacle-lms/static/js/main.5fabf18c.js",
+    "static/js/787.0a225cdb.chunk.js": "/spfinnacle-lms/static/js/787.0a225cdb.chunk.js",
+    "index.html": "/spfinnacle-lms/index.html",
+    "main.7ae86730.css.map": "/spfinnacle-lms/static/css/main.7ae86730.css.map",
+    "main.5fabf18c.js.map": "/spfinnacle-lms/static/js/main.5fabf18c.js.map",
+    "787.0a225cdb.chunk.js.map": "/spfinnacle-lms/static/js/787.0a225cdb.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7ae86730.css",
+    "static/js/main.5fabf18c.js"
+  ]
+}
