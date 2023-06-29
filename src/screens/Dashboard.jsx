@@ -174,7 +174,9 @@ const Dashboard = () => {
             </Dropdown>
           </div>
         </Header>
-        <Content style={{ margin: '24px 16px 0' }}>{getCurrentContent()}</Content>
+        <Content style={{ margin: '24px 16px 0' }}>
+          <h1>Dashboard</h1>
+        </Content>
       </Layout>
     </Layout>
   );
