@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "/spfinnacle-lms/static/css/main.f1b3afa9.css",
-    "main.js": "/spfinnacle-lms/static/js/main.0715120a.js",
+    "main.css": "/spfinnacle-lms/static/css/main.9ea4dfba.css",
+    "main.js": "/spfinnacle-lms/static/js/main.a90e1fb6.js",
     "static/js/787.0a225cdb.chunk.js": "/spfinnacle-lms/static/js/787.0a225cdb.chunk.js",
-    "static/media/logo.png": "/spfinnacle-lms/static/media/logo.0a101ccb9b076792868c.png",
     "index.html": "/spfinnacle-lms/index.html",
-    "main.f1b3afa9.css.map": "/spfinnacle-lms/static/css/main.f1b3afa9.css.map",
-    "main.0715120a.js.map": "/spfinnacle-lms/static/js/main.0715120a.js.map",
+    "main.9ea4dfba.css.map": "/spfinnacle-lms/static/css/main.9ea4dfba.css.map",
+    "main.a90e1fb6.js.map": "/spfinnacle-lms/static/js/main.a90e1fb6.js.map",
     "787.0a225cdb.chunk.js.map": "/spfinnacle-lms/static/js/787.0a225cdb.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.f1b3afa9.css",
-    "static/js/main.0715120a.js"
+    "static/css/main.9ea4dfba.css",
+    "static/js/main.a90e1fb6.js"
   ]
 }
