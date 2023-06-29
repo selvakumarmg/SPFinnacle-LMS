@@ -1,183 +1,181 @@
-import React, { useState } from 'react';
-import { Layout, Card, Table, Badge, Button, Modal, Form, Input, Grid, Row, Col, message } from 'antd';
-import '../styles/dashboard.css';
-import AppHeader from '../components/AppHeader';
+import React, { useEffect, useState } from 'react';
+import { Layout, Menu, Avatar, Dropdown, Card } from 'antd';
+import {
+  DesktopOutlined,
+  PieChartOutlined,
+  FileOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+  UserOutlined,
+  LogoutOutlined,
+} from '@ant-design/icons';
+import Leads from './Leads';
+import { db } from '../screens/firebase'
+import { useDispatch } from 'react-redux';
+import { logout } from '../config/store/reducer/AuthReducer';
+// import { initializeApp } from "firebase-admin/app";
 
-const { Content } = Layout;
+const { Header, Sider, Content } = Layout;
+
+// const serviceAccount = require('../constants/serviceAccountKey.json'); // Replace with the path to your service account JSON file
+// initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+//   databaseURL: 'https://lms-spfinnacle.firebaseio.com/'
+// });
 
 const Dashboard = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [form] = Form.useForm();
-  const [leads, setLeads] = useState([]);
+  const dispatch = useDispatch();
+  const [collapsed, setCollapsed] = useState(false);
+  const [selectedMenuKey, setSelectedMenuKey] = useState('1');
 
-  const showModal = () => {
-    setIsModalVisible(true);
+   const fetchUsersData = async () => {
+    try {
+      const usersRef = db.collection('users');
+      const snapshot = await usersRef.get();
+  
+      const usersData = [];
+      snapshot.forEach((doc) => {
+        usersData.push(doc.data());
+      });
+        console.log('Error fetching users data:', usersData);
+    } catch (error) {
+      console.error('Error fetching users data:', error);
+    }
+  };
+  
+
+
+  useEffect(() => {
+    fetchUsersData();
+  }, []);
+
+  const toggleSidebar = () => {
+    setCollapsed(!collapsed);
   };
 
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleFormSubmit = (values) => {
-    // Add lead to the list
-    const newLead = {
-      key: leads.length + 1,
-      ...values,
-      status: 'Pending',
-    };
-    setLeads([...leads, newLead]);
-    message.success('Lead created successfully');
-    handleCancel();
-    form.resetFields();
-  };
-
-  const columns = [
+  const menuOptions = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      key: '1',
+      title: 'Dashboard',
+      icon: <PieChartOutlined />,
+      content: (
+        <>
+        <div>
+      <Card
+        title="Card 1"
+        style={{
+          background: 'linear-gradient(to right, #667eea, #764ba2)',
+          color: 'white',
+        }}
+      >
+        Card 1 Content
+      </Card>
+      <Card
+        title="Card 2"
+        style={{
+          background: 'linear-gradient(to right, #00b09b, #96c93d)',
+          color: 'white',
+        }}
+      >
+        Card 2 Content
+      </Card>
+      <Card
+        title="Card 3"
+        style={{
+          background: 'linear-gradient(to right, #ff9966, #ff5e62)',
+          color: 'white',
+        }}
+      >
+        Card 3 Content
+      </Card>
+    </div>
+        </>
+      ),
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      key: '2',
+      title: 'Leads',
+      icon: <DesktopOutlined />,
+      content: <Leads />,
     },
     {
-      title: 'Mobile Number',
-      dataIndex: 'mobile',
-      key: 'mobile',
-    },
-    {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Profession',
-      dataIndex: 'profession',
-      key: 'profession',
-    },
-    {
-      title: 'Salary',
-      dataIndex: 'salary',
-      key: 'salary',
-    },
-    {
-      title: 'Loan Amount',
-      dataIndex: 'loanAmount',
-      key: 'loanAmount',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => <Badge color={status === 'Pending' ? 'orange' : 'green'} text={status} />,
+      key: '3',
+      title: 'Remainders',
+      icon: <FileOutlined />,
+      content: <h2>Reports Screen</h2>,
     },
   ];
 
+  const handleMenuClick = (key) => {
+    setSelectedMenuKey(key);
+  };
+
+  const getMenuItems = () => {
+    return menuOptions.map((option) => (
+      <Menu.Item key={option.key} icon={option.icon}>
+        {option.title}
+      </Menu.Item>
+    ));
+  };
+
+  const getCurrentContent = () => {
+    const selectedOption = menuOptions.find(
+      (option) => option.key === selectedMenuKey
+    );
+    return selectedOption ? selectedOption.content : null;
+  };
+
+  const logoutAction = () => {
+    dispatch(logout())
+  };
+
+  const menu = (
+    <Menu>
+      <Menu.Item icon={<UserOutlined />} key="profile">
+        Profile
+      </Menu.Item>
+      <Menu.Item icon={<LogoutOutlined />} key="logout" onClick={logoutAction}>
+        Logout
+      </Menu.Item>
+    </Menu>
+  );
+
   return (
-    <Layout>
-      <AppHeader />
-      <Content className="dashboard-content">
-        <div className="site-layout-content">
-          <Row gutter={[16, 16]}>
-            <Col span={4}>
-              <Card title="Total Leads" className="dashboard-card">
-                {leads.length}
-              </Card>
-            </Col>
-            <Col span={4}>
-              <Card title="Pending" className="dashboard-card">
-                0
-              </Card>
-            </Col>
-            <Col span={4}>
-              <Card title="Completed" className="dashboard-card">
-                0
-              </Card>
-            </Col>
-          </Row>
-        </div>
-
-        <Button type="primary" onClick={showModal} style={{ marginTop: '20px', marginBottom: '20px',position:'absolute', right:40 }}>
-  Create Lead
-</Button>
-
-
-
-        <Modal
-          title="Create Lead"
-          visible={isModalVisible}
-          onCancel={handleCancel}
-          footer={null}
+    <Layout style={{ minHeight: '100vh' }}>
+      <Sider
+        width={200}
+        theme="dark"
+        collapsible
+        collapsed={collapsed}
+        onCollapse={toggleSidebar}
+      >
+        <Menu
+          theme="dark"
+          mode="inline"
+          defaultSelectedKeys={[selectedMenuKey]}
+          onClick={({ key }) => handleMenuClick(key)}
         >
-          <Form form={form} onFinish={handleFormSubmit}>
-            <Form.Item
-              name="name"
-              label="Name"
-              rules={[{ required: true, message: 'Please enter the name' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="email"
-              label="Email"
-              rules={[
-                { required: true, message: 'Please enter the email' },
-                { type: 'email', message: 'Please enter a valid email' },
-              ]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="mobile"
-              label="Mobile Number"
-              rules={[{ required: true, message: 'Please enter the mobile number' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="address"
-              label="Address"
-              rules={[{ required: true, message: 'Please enter the address' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="profession"
-              label="Profession"
-              rules={[{ required: true, message: 'Please enter the profession' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="salary"
-              label="Salary"
-              rules={[{ required: true, message: 'Please enter the salary' }]}
-            >
-              <Input />
-            </Form.Item>
-            <Form.Item
-              name="loanAmount"
-              label="Loan Amount"
-              rules={[{ required: true, message: 'Please enter the loan amount' }]}
-            >
-              <Input />
-            </Form.Item>
-
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Save
-              </Button>
-              <Button onClick={handleCancel} style={{ marginLeft: '10px' }}>
-                Cancel
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
-
-        <Table style={{marginTop:80}} columns={columns} dataSource={leads} />
-      </Content>
+          {getMenuItems()}
+        </Menu>
+      </Sider>
+      <Layout>
+        <Header
+          className="site-layout-sub-header-background"
+          style={{ padding: '0 16px', display: 'flex', alignItems: 'center' }}
+        >
+          {collapsed ? (
+            <MenuUnfoldOutlined className="trigger" onClick={toggleSidebar} />
+          ) : (
+            <MenuFoldOutlined className="trigger" onClick={toggleSidebar} />
+          )}
+          <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+            <Dropdown overlay={menu} placement="bottomRight">
+              <Avatar style={{ backgroundColor: '#f56a00', verticalAlign: 'middle' }} icon={<UserOutlined />} />
+            </Dropdown>
+          </div>
+        </Header>
+        <Content style={{ margin: '24px 16px 0' }}>{getCurrentContent()}</Content>
+      </Layout>
     </Layout>
   );
 };

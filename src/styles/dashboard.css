@@ -47,3 +47,32 @@
   padding: 20px;
 }
 
+/* Mobile View */
+@media screen and (max-width: 767px) {
+  .dashboard-content {
+    padding: 16px;
+  }
+
+  .dashboard-card {
+    width: 100%;
+    margin-bottom: 16px;
+  }
+
+  .site-layout-content {
+    margin-top: 0;
+  }
+
+  .ant-btn {
+    width: 100%;
+  }
+
+  .ant-modal-content {
+    border-radius: 0;
+  }
+
+  .ant-table {
+    margin-top: 16px;
+  }
+}
+
+

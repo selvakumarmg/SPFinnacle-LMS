@@ -67,7 +67,8 @@ const Login = () => {
       console.log('UID', uid);
       const userCollectionsRef = collection(db, 'users');
       const userCollectionsSnapshot = await getDocs(userCollectionsRef);
-      console.log("userDocSnap", userCollectionsSnapshot);
+      userCollectionsSnapshot.docs.forEach(el=> console.log("userDocData",el.data() ))
+      
   
       let existingUser = null;
   
