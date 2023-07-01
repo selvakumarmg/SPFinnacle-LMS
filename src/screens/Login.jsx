@@ -64,7 +64,6 @@ const Login = () => {
 
   const fetchUserDetails = async (uid, userData) => {
     try {
-      console.log('UID', uid);
       const userCollectionsRef = collection(db, 'users');
       const userCollectionsSnapshot = await getDocs(userCollectionsRef);
       userCollectionsSnapshot.docs.forEach(el=> console.log("userDocData",el.data() ))

@@ -1,66 +1,66 @@
 import React from 'react';
-import { Modal, Form, Input, Button } from 'antd';
+import { Modal, Form, Input, message } from 'antd';
 
-const CreateLead = ({ visible, onCancel, handleOk }) => {
+const CreateLead = ({ visible, handleOk, onCancel, leads }) => {
   const [form] = Form.useForm();
 
-  const onFinish = (values) => {
-    handleOk(form);
+  const handleFormSubmit = () => {
+    form.validateFields().then((values) => {
+      const duplicateLead = leads.find((lead) => lead.mobileNumber === values.mobileNumber);
+      if (duplicateLead) {
+        message.error('Mobile number already exists. Please enter a unique mobile number.');
+      } else {
+        handleOk(form, values);
+      }
+    });
   };
 
   return (
     <Modal
+      title="New Lead"
       visible={visible}
-      title="Fill Details"
       onCancel={onCancel}
-      footer={[
-        <Button key="cancel" onClick={onCancel}>
-          Cancel
-        </Button>,
-        <Button key="submit" type="primary" onClick={form.submit}>
-          Submit
-        </Button>,
-      ]}
+      onOk={handleFormSubmit}
     >
-      <Form form={form} layout="vertical" onFinish={onFinish}>
+      <Form form={form} layout="vertical">
         <Form.Item
-          name="name"
           label="Name"
-          rules={[{ required: true, message: 'Please enter a name' }]}
+          name="name"
+          rules={[{ required: true, message: 'Please enter the name.' }]}
         >
-          <Input placeholder="Enter name" />
+          <Input />
         </Form.Item>
         <Form.Item
-          name="address"
           label="Address"
-          rules={[{ required: true, message: 'Please enter an address' }]}
+          name="address"
+          rules={[{ required: true, message: 'Please enter the address.' }]}
         >
-          <Input placeholder="Enter address" />
+          <Input />
         </Form.Item>
         <Form.Item
-          name="profession"
           label="Profession"
-          rules={[{ required: true, message: 'Please enter a profession' }]}
+          name="profession"
+          rules={[{ required: true, message: 'Please enter the profession.' }]}
         >
-          <Input placeholder="Enter profession" />
+          <Input />
         </Form.Item>
         <Form.Item
-          name="salary"
           label="Salary"
-          rules={[{ required: true, message: 'Please enter a salary' }]}
+          name="salary"
+          rules={[{ required: true, message: 'Please enter the salary.' }]}
         >
-          <Input type='number' placeholder="Enter salary" />
+          <Input type="number" />
         </Form.Item>
         <Form.Item
-          name="loanAmount"
           label="Loan Amount"
-          rules={[{ required: true, message: 'Please enter a loan amount' }]}
+          name="loanAmount"
+          rules={[{ required: true, message: 'Please enter the loan amount.' }]}
         >
-          <Input type='number' placeholder="Enter loan amount" />
+          <Input type="number" />
         </Form.Item>
         <Form.Item
-          name="mobileNumber"
           label="Mobile Number"
+          name="mobileNumber"
           rules={[
             { required: true, message: 'Please enter a mobile number' },
             {
