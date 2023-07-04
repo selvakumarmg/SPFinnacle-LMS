@@ -184,7 +184,7 @@ const Login = () => {
 
           <Form.Item>
             <Checkbox checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)}>
-              I agree to the <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">terms and conditions</a>.
+              I agree to the <a href="/spfinnacle-lms/terms-and-conditions" target="_blank" rel="noopener noreferrer">terms and conditions</a>.
             </Checkbox>
           </Form.Item>
 
