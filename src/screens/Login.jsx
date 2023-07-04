@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { auth, db, provider } from './firebase';
 import { signInWithPopup } from 'firebase/auth';
 import { Button, Input, message, Form, Checkbox } from 'antd';
-import { MailOutlined, GoogleOutlined } from '@ant-design/icons';
+import { MailOutlined, GoogleOutlined, EyeFilled } from '@ant-design/icons';
 import '../styles/login.css';
 import { useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
@@ -177,6 +177,7 @@ const Login = () => {
             <Input.Password
               placeholder="Enter password"
               className="password-field"
+              prefix={<MailOutlined />}
             />
           </Form.Item>
 

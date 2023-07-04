@@ -40,7 +40,7 @@ export const routes = [
     requiresAuth: false,
   },
   {
-    path: '/terms-and-conditions',
+    path: '/spfinnacle-lms/terms-and-conditions',
     component: TermsAndConditions,
   },
   {
@@ -63,7 +63,7 @@ const PrivateRoute = () => {
             key={route.path}
             path={route.path}
             element={
-              (route.path === '/terms-and-conditions') ? (
+              (route.path === '/spfinnacle-lms/terms-and-conditions') ? (
                 <route.component />
               ) : (
                 !isAuthenticated ? (
