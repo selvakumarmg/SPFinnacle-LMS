@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { auth, db, provider } from './firebase';
 import { signInWithPopup } from 'firebase/auth';
-import { Button, Input, message, Form } from 'antd';
+import { Button, Input, message, Form, Checkbox } from 'antd';
 import { MailOutlined, GoogleOutlined } from '@ant-design/icons';
 import '../styles/login.css';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,8 @@ import { useDispatch } from 'react-redux';
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [agreeTerms, setAgreeTerms] = useState(false);
+
   const handleGoogleLogin = () => {
     signInWithPopup(auth, provider)
       .then((data) => {
@@ -32,8 +34,11 @@ const Login = () => {
   const onFinish = (values) => {
     console.log('Received values:', values);
     const { email, password } = values;
-    handleSignUp(email, password);
-    // Perform additional actions such as form submission or validation here
+    if (agreeTerms) {
+      handleSignUp(email, password);
+    } else {
+      message.error('Please agree to the terms and conditions.');
+    }
   };
 
   const handleSignUp = (email, password) => {
@@ -66,11 +71,11 @@ const Login = () => {
     try {
       const userCollectionsRef = collection(db, 'users');
       const userCollectionsSnapshot = await getDocs(userCollectionsRef);
-      userCollectionsSnapshot.docs.forEach(el=> console.log("userDocData",el.data() ))
-      
-  
+      userCollectionsSnapshot.docs.forEach(el => console.log("userDocData", el.data()))
+
+
       let existingUser = null;
-  
+
       for (const docSnap of userCollectionsSnapshot.docs) {
         const userDocData = docSnap.data();
         if (userDocData.uid === uid) {
@@ -78,7 +83,7 @@ const Login = () => {
           break;
         }
       }
-  
+
       if (existingUser) {
         // User exists
         message.success('Logged in successfully');
@@ -97,13 +102,13 @@ const Login = () => {
         console.log("New user");
         navigate('/user-details', { state: userData });
       }
-  
+
     } catch (error) {
       navigate('/user-details', { state: userData });
       console.log("error", error);
     }
   };
-  
+
 
   const handleSignIn = (email, password) => {
     signInWithEmailAndPassword(auth, email, password)
@@ -118,7 +123,7 @@ const Login = () => {
         } = user;
         console.log("handleSignIn", uid);
         const userData = { uid, email, displayName, photoURL };
-        fetchUserDetails(uid,userData)
+        fetchUserDetails(uid, userData)
       })
       .catch((error) => {
         // Handle sign-in errors
@@ -174,6 +179,15 @@ const Login = () => {
               className="password-field"
             />
           </Form.Item>
+
+
+          <Form.Item>
+            <Checkbox checked={agreeTerms} onChange={(e) => setAgreeTerms(e.target.checked)}>
+              I agree to the <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">terms and conditions</a>.
+            </Checkbox>
+          </Form.Item>
+
+
           <Button type="primary" htmlType="submit" className="enroll-button">
             Enroll
           </Button>
