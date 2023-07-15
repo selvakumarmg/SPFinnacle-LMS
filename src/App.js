@@ -1,4 +1,5 @@
 import React from 'react';
+import './index.css'; // Import Tailwind CSS styles
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Dashboard from './screens/Dashboard';
 import Login from './screens/Login';
@@ -10,6 +11,7 @@ import PendingApplications from './screens/PendingApplications';
 import { store, persistor } from './config/store';
 import { PersistGate } from 'redux-persist/integration/react';
 import TermsAndConditions from './screens/TermsAndConditions';
+import Register from './screens/Register';
 
 export const routes = [
   {
@@ -35,6 +37,11 @@ export const routes = [
     requiresAuth: false,
   },
   {
+    path: '/signup',
+    component: Register,
+    requiresAuth: false,
+  },
+  {
     path: '/pending-action',
     component: PendingApplications,
     requiresAuth: false,
@@ -57,6 +64,7 @@ const PrivateRoute = () => {
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Register />} />
         <Route path="/user-details" element={<UserForm />} />
         {routes.map((route) => (
           <Route
