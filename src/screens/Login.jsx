@@ -1,21 +1,30 @@
 import React, { useState } from 'react';
-import { Card, Input, Button, Form, Image } from 'antd';
+import { Card, Input, Button, Form, Image, message as alert } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { setAuthStatus, setUserDetails } from '../config/store/reducer/AuthReducer';
+import { postApiCall } from '../config/api';
 
 const Login = () => {
   const [showError, setShowError] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  const onFinish = (values) => {
 
-    // setShowError(true);
-    // console.log('Received values:', values);
-    // setTimeout(() => {
-    //   setShowError(false);
-    // }, 3000);
+  const onFinish = async (values) => {
+    
+    try {
+      const res = await postApiCall('/auth/signin', values);
+      const {status, message, data} = res;
+      if(status === 200){
+        dispatch(setAuthStatus(true));
+        dispatch(setUserDetails(data));
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      console.log("Error",error)
+      // alert.error('Login error:', error);
+    }
   };
 
   return (
@@ -26,14 +35,14 @@ const Login = () => {
       <div className="w-1/2 flex items-center justify-center">
         {/* Right side with red background */}
         <Card title="Login" style={{ width: 400 }}>
-          <Form onFinish={onFinish}>
+          <Form initialValues={{email:'john.doe@email.com', password:'password123'}} onFinish={onFinish}>
             <Form.Item
-              name="username"
-              rules={[{ required: true, message: 'Please enter your username' }]}
+              name="email"
+              rules={[{ required: true, message: 'Please enter your email' }]}
             >
               <Input
                 prefix={<UserOutlined />}
-                placeholder="Username"
+                placeholder="Email"
                 style={{ fontSize: '16px' }}
               />
             </Form.Item>
@@ -50,7 +59,7 @@ const Login = () => {
             {showError && (
               <Form.Item>
                 <p style={{ color: 'red', marginBottom: '10px', fontSize: '14px' }}>
-                  Error: Invalid username or password.
+                  Error: Invalid email or password.
                 </p>
               </Form.Item>
             )}

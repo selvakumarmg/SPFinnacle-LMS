@@ -51,6 +51,15 @@
   padding: 20px;
 }
 
+.actions-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+  margin-top: 20px;
+}
+
 /* Mobile View */
 @media screen and (max-width: 767px) {
   .dashboard-content {

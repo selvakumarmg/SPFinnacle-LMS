@@ -58,7 +58,6 @@ export const routes = [
 const PrivateRoute = () => {
   const isAuthenticated = useSelector((state) => state.AuthReducer.authStatus);
   const userDetails = useSelector((state) => state.AuthReducer.userDetails);
-  console.log("userDetails", userDetails);
 
   return (
     <Router>
@@ -76,7 +75,7 @@ const PrivateRoute = () => {
               ) : (
                 !isAuthenticated ? (
                   <Navigate to="/login" />
-                ) : isAuthenticated && route.requiresAuth && userDetails && userDetails.status === 'pending' ? (
+                ) : isAuthenticated && route.requiresAuth && userDetails && userDetails.profile_status === 'pending' ? (
                   <Navigate to="/pending-action" />
                 ) : (
                   <route.component />
@@ -85,9 +84,6 @@ const PrivateRoute = () => {
             }
           />
         ))}
-        {/* {userDetails && userDetails.status === 'pending' && (
-          <Route path="/pending-action" element={<PendingApplications />} />
-        )} */}
       </Routes>
     </Router>
   );

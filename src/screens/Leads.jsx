@@ -1,23 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Table, Tag, Button, Modal, Form, Input, message,Spin,Select  } from 'antd';
+import { Table, Tag, Button, Modal, Form, Input, message as alert, Spin } from 'antd';
 import { EyeOutlined, EditOutlined, PlusOutlined, DeleteFilled, SyncOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import CreateLead from '../components/CreateLead';
 import LeadDetailsModal from '../components/LeadDetailsModal';
 import EditLead from '../components/EditLead';
-import { useSelector } from 'react-redux';
-import { db } from './firebase';
-import { addDoc, collection, deleteDoc, doc, getDocs, updateDoc } from 'firebase/firestore';
+import { get } from '../config/api';
+import { KeyboardArrowDown, KeyboardArrowUp } from '@mui/icons-material';
+import { Paper, Typography } from '@mui/material';
 
 const Leads = () => {
-  const userDetails = useSelector((state) => state.AuthReducer.userDetails);
-  const [editVisible, setEditVisible] = useState(false)
+  const [editVisible, setEditVisible] = useState(false);
   const [visible, setVisible] = useState(false);
   const [leadVisible, setLeadVisible] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [leads, setLeads] = useState([]);
   const [filteredLeads, setFilteredLeads] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [updatedStatus, setUpdatedStatus] = useState('');
 
   const [searchText, setSearchText] = useState('');
   const [form] = Form.useForm();
@@ -31,24 +29,34 @@ const Leads = () => {
   }, [searchText, leads]);
 
   const fetchLeads = async () => {
+    setLoading(true);
+
     try {
-      setLoading(true);
-      const userId = userDetails.uid;
-      const leadsCollectionRef = collection(db, 'leads', userId, 'leads');
-      const querySnapshot = await getDocs(leadsCollectionRef);
-      const leadsData = querySnapshot.docs.map((doc) => doc.data());
-      const userLeads = leadsData.filter((lead) => lead.userId === userId);
-      setLeads(userLeads);
-      setLoading(false);
+      const res = await get(`leads/1`);
+      const { status, message, data } = res;
+      if (status === 200) {
+        setLeads(data);
+        setLoading(false);
+      }
     } catch (error) {
-      console.error('Error getting leads: ', error);
+      setLoading(false);
+      alert.error('Login error:', error.message);
     }
   };
 
   const filterLeads = () => {
-    const filteredLeads = leads.filter((lead) =>
-      lead.mobileNumber.toLowerCase().includes(searchText.toLowerCase())
-    );
+    if (!leads) {
+      // If leads is undefined or null, set an empty array as filteredLeads
+      setFilteredLeads([]);
+      return;
+    }
+
+    const filteredLeads = leads.filter((lead) => {
+      // Check if the properties are defined before accessing them
+      const mobileNumber = lead.mobileNumber ? lead.mobileNumber.toLowerCase() : '';
+      return mobileNumber.includes(searchText.toLowerCase());
+    });
+
     setFilteredLeads(filteredLeads);
   };
 
@@ -58,34 +66,13 @@ const Leads = () => {
     form.resetFields();
   };
 
-  const generateUniqueId = () => {
-    const prefix = 'LED';
-    const randomId = Math.floor(10000000 + Math.random() * 90000000); // Generate a random 8-digit number
-    const uniqueId = prefix + randomId.toString().substring(0, 8); // Append prefix and take the first 8 digits
-    return uniqueId;
-  };
-
   const handleUpdate = async () => {
     try {
       const values = await form.validateFields();
-      const userId = userDetails.uid;
-      const userCollectionsRef = collection(db, 'leads', userId, 'leads');
-      const userCollectionsSnapshot = await getDocs(userCollectionsRef);
-
-      const leadToUpdate = userCollectionsSnapshot.docs.find((docSnap) => {
-        const userDocData = docSnap.data();
-        return userDocData.mobileNumber === values.mobileNumber;
-      });
-
-      if (leadToUpdate) {
-        const docRef = doc(db, 'leads', userId, 'leads', leadToUpdate.id);
-        await updateDoc(docRef, values);
-        fetchLeads();
-        message.success('Lead updated successfully.');
-        handleCancel();
-      } else {
-        message.error('Lead not found.');
-      }
+      // Update logic (for demonstration)
+      console.log('Update lead:', values);
+      alert.success('Lead updated successfully.');
+      handleCancel();
     } catch (error) {
       console.error('Error updating lead: ', error);
     }
@@ -106,9 +93,9 @@ const Leads = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'pending':
+      case 'fresh':
         return <ClockCircleOutlined />;
-      case 'approved':
+      case 'topup':
         return <CheckCircleOutlined />;
       case 'inprogress':
         return <SyncOutlined spin />;
@@ -118,73 +105,36 @@ const Leads = () => {
   };
 
   const handleOk = async (form, values) => {
-    form.validateFields().then(async (values) => {
-      const userId = userDetails.uid;
-      const leadId = generateUniqueId();
-
-      const leadData = {
-        leadId,
-        userId,
-        ...values,
-        status: 'pending',
-      };
-
-      try {
-        await addDoc(collection(db, 'leads', userId, 'leads'), leadData);
-        setLeadVisible(!leadVisible);
-        message.success('Lead created successfully.');
-        fetchLeads();
-        form.resetFields();
-      } catch (error) {
-        console.error('Error setting document: ', error);
-      }
+    form.validateFields().then((values) => {
+      // Create logic (for demonstration)
+      console.log('Create lead:', values);
+      alert.success('Lead created successfully.');
+      handleCancel();
     });
   };
 
   const handleDelete = async (record) => {
-    try {
-      const userId = userDetails.uid;
-      const userCollectionsRef = collection(db, 'leads', userId, 'leads');
-      const userCollectionsSnapshot = await getDocs(userCollectionsRef);
-
-      const leadToUpdate = userCollectionsSnapshot.docs.find((docSnap) => {
-        const userDocData = docSnap.data();
-        return userDocData.mobileNumber === record.mobileNumber;
-      });
-
-      if (leadToUpdate) {
-        const docRef = doc(db, 'leads', userId, 'leads', leadToUpdate.id);
-        await deleteDoc(docRef);
-        fetchLeads();
-        message.success('Lead deleted successfully.');
-      } else {
-        message.error('Lead not found.');
-      }
-    } catch (error) {
-      console.error('Error deleting lead: ', error);
-    }
+    // Delete logic (for demonstration)
+    console.log('Delete lead:', record);
+    alert.success('Lead deleted successfully.');
   };
 
   const columns = [
     {
-      title: 'Lead ID',
-      dataIndex: 'leadId',
-      key: 'leadId',
+      title: 'ID',
+      dataIndex: 'id',
+      key: 'id',
     },
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
+      render: (text, record) => `${record.first_name} ${record.last_name}`,
     },
     {
-      title: 'Address',
-      dataIndex: 'address',
-      key: 'address',
-    },
-    {
-      title: 'Profession',
-      dataIndex: 'profession',
-      key: 'profession',
+      title: 'Phone Number',
+      dataIndex: 'mobile_no',
+      key: 'mobile_no',
     },
     {
       title: 'Salary',
@@ -193,19 +143,8 @@ const Leads = () => {
     },
     {
       title: 'Loan Amount',
-      dataIndex: 'loanAmount',
-      key: 'loanAmount',
-    },
-    {
-      title: 'Mobile Number',
-      dataIndex: 'mobileNumber',
-      key: 'mobileNumber',
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => <Tag icon={getStatusIcon(status)} color={getStatusColor(status)}>{status.charAt(0).toUpperCase() + status.slice(1)}</Tag>,
+      dataIndex: 'loan_amount',
+      key: 'loan_amount',
     },
     {
       title: 'Actions',
@@ -242,6 +181,71 @@ const Leads = () => {
     },
   ];
 
+  const [expandedRowKeys, setExpandedRowKeys] = useState([]);
+
+  // Function to handle row expansion
+  const handleExpand = (expanded, record) => {
+    const newExpandedRowKeys = expanded
+      ? [...expandedRowKeys, record.id]
+      : expandedRowKeys.filter((key) => key !== record.id);
+
+    setExpandedRowKeys(newExpandedRowKeys);
+  };
+
+  const renderExpandedRow = (record) => {
+    return (
+      <Paper elevation={0} style={{ padding: 16, backgroundColor: '#BDBDBD' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 8 }}>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>First Name:</Typography>
+            <p>{record.first_name}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Last Name:</Typography>
+            <p>{record.last_name}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Phone Number:</Typography>
+            <p>{record.mobile_no}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Company Name:</Typography>
+            <p>{record.company_name}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Salary:</Typography>
+            <p>{record.salary}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Door Number:</Typography>
+            <p>{record.door_number}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Street:</Typography>
+            <p>{record.street}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>City:</Typography>
+            <p>{record.city}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>State:</Typography>
+            <p>{record.state}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Pin Code:</Typography>
+            <p>{record.pin_code}</p>
+          </div>
+          <div>
+            <Typography variant="subtitle1" style={{ fontWeight: 'bold',color: '#0047AB',fontSize:12 }}>Loan Amount:</Typography>
+            <p>{record.loan_amount}</p>
+          </div>
+          {/* Add more columns here with their respective titles and data */}
+        </div>
+      </Paper>
+    );
+  };
+
   return (
     <>
       <Button
@@ -251,11 +255,9 @@ const Leads = () => {
         onClick={() => {
           setLeadVisible(!leadVisible);
         }}
-        style={{ marginBottom: 16,position:'absolute',right:30 }}
-         size="large"
+        style={{ marginBottom: 16, position: 'absolute', right: 30, backgroundColor: 'blueviolet' }}
+        size="large"
       />
-        {/* New Lead
-      </Button> */}
       <Input
         placeholder="Search with Phone number"
         value={searchText}
@@ -263,16 +265,25 @@ const Leads = () => {
         style={{ marginBottom: 16, width: 200, marginLeft: 30 }}
       />
       {loading ? (
-        <Spin style={{height:100,width:100,alignSelf:'center'}} size="large" />
+        <Spin style={{ height: 100, width: 100, alignSelf: 'center' }} size="large" />
       ) : (
-        <Table dataSource={filteredLeads} columns={columns} rowKey="leadId" />
+        <Table
+          dataSource={filteredLeads}
+          columns={columns}
+          rowKey="id"
+          expandable={{
+            expandedRowRender: renderExpandedRow,
+            onExpand: handleExpand,
+            expandedRowKeys: expandedRowKeys,
+          }}
+        />
       )}
 
       <CreateLead
-      visible={leadVisible}
-      handleOk={handleOk}
-      onCancel={() => setLeadVisible(false)}
-      leads={leads}
+        visible={leadVisible}
+        handleOk={handleOk}
+        onCancel={() => setLeadVisible(false)}
+        leads={leads}
       />
 
       <Modal
@@ -287,10 +298,10 @@ const Leads = () => {
       <Modal
         title="Edit Lead"
         visible={editVisible}
-        onCancel={()=> setEditVisible(!editVisible)}
+        onCancel={() => setEditVisible(!editVisible)}
         footer={null}
       >
-        <EditLead form={form} handleUpdate={handleUpdate} handleCancel={()=> setEditVisible(!editVisible)} selectedLead={selectedLead} />
+        <EditLead form={form} handleUpdate={handleUpdate} handleCancel={() => setEditVisible(!editVisible)} selectedLead={selectedLead} />
       </Modal>
     </>
   );

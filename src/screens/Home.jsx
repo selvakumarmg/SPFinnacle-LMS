@@ -1,5 +1,5 @@
 import React from 'react';
-import { Row, Col, Card, Typography, Progress } from 'antd';
+import { Row, Col, Card, Typography, Progress, Button } from 'antd';
 import MonthlyChart from '../components/MonthlyChart';
 
 const { Title, Text } = Typography;
@@ -63,6 +63,9 @@ const Home = () => {
             <Text strong>Coming soon...</Text>
           </Card>
         </Col>
+        <Button type='primary' style={{backgroundColor:'#BDBDBD'}}>
+          Create New Challange
+        </Button>
       </Row>
       
     </div>

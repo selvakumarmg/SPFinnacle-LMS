@@ -1,0 +1,84 @@
+.container {
+  display: flex;
+  flex: 1;
+  height: 100vh;
+  background-color: #EFEFEF;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.registration-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .registration-form-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+  
+  .registration-form-button {
+    width: 100%;
+  }
+
+  .next-button {
+    background-color: #1890ff; /* Change the background color to match the primary color */
+    border-color: #1890ff; /* Change the border color to match the primary color */
+    color: #fff; /* Change the text color to white or your preferred color */
+  }
+  
+  .next-button:hover {
+    background-color: #1890ff; /* Change the background color to match the primary color */
+    border-color: #1890ff; /* Change the border color to match the primary color */
+    color: #fff; /* Change the text color to white or your preferred color */
+  }
+
+
+  /* stepper.css */
+
+/* Styling for the stepper container */
+.stepper-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+/* Styling for each step in the stepper */
+.stepper-step {
+  width: 33.33%; /* Adjust based on the number of steps */
+  text-align: center;
+  position: relative;
+}
+
+/* Styling for the step number */
+.step-number {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Styling for the step label */
+.step-label {
+  margin-top: 5px;
+  font-size: 14px;
+  color: #888;
+}
+
+/* Styling for the active step */
+.stepper-step.active .step-number {
+  color: #007bff; /* Change to your desired active step color */
+}
+
+.stepper-step.active .step-label {
+  color: #007bff; /* Change to your desired active step color */
+}
+
+  

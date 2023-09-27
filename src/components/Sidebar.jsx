@@ -1,6 +1,9 @@
 import React from 'react';
 import { Layout, Menu, Image } from 'antd';
 import { DesktopOutlined, PieChartOutlined, FileOutlined } from '@ant-design/icons';
+import SupportAgentIcon from '@mui/icons-material/SupportAgent';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import AlarmIcon from '@mui/icons-material/Alarm';
 
 const { Sider } = Layout;
 const { SubMenu } = Menu;
@@ -15,13 +18,18 @@ const Sidebar = ({ collapsed, selectedMenuKey, handleMenuClick }) => {
     {
       key: '2',
       title: 'Leads',
-      icon: <DesktopOutlined />,
+      icon: <LeaderboardIcon />,
     },
     {
       key: '3',
       title: 'Remainders',
-      icon: <FileOutlined />,
+      icon: <AlarmIcon />,
     },
+    // {
+    //   key: '4',
+    //   title: 'TeleCallers',
+    //   icon: <SupportAgentIcon />,
+    // },
   ];
 
   const getMenuItems = () => {

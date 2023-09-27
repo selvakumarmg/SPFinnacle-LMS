@@ -4,7 +4,7 @@ import { UserOutlined, LogoutOutlined, BellOutlined, MessageOutlined } from '@an
 
 const { Header } = Layout;
 
-const AppHeader = ({ logoutAction }) => {
+const AppHeader = ({ toggleSidebar,logoutAction }) => {
   const messageList = [
     { id: 1, title: 'Message 1', isRead: false },
     { id: 2, title: 'Message 2', isRead: true },

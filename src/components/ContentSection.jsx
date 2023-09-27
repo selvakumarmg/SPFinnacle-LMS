@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import Home from '../screens/Home';
 import Leads from '../screens/Leads';
 import ReminderList from '../screens/RemainderList';
+import Telecallers from './TeleCallers';
 
 
 const { Content } = Layout;
@@ -16,6 +17,8 @@ const ContentSection = ({ selectedMenuKey }) => {
         return <Leads />;
       case '3':
         return <ReminderList />;
+      case '4':
+        return <Telecallers />;
       default:
         return null;
     }

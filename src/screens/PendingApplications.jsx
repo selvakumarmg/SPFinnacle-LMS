@@ -1,70 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import '../styles/PendingApplications.css'; // Import the CSS file
-import { collection, query, where, getDocs } from 'firebase/firestore';
-import { useSelector } from 'react-redux';
-import { db } from './firebase';
-import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { postApiCall } from '../config/api';
+import { setUserDetails } from '../config/store/reducer/AuthReducer';
 import { message } from 'antd';
+import { Button } from '@mui/material';
 
 const PendingApplications = () => {
   const userDetails = useSelector((state) => state.AuthReducer.userDetails);
-
+  const dispatch = useDispatch();
   const location = useLocation();
-  const { state: existingUser } = location;
+  const navigate = useNavigate();
 
   const [pendingApplications, setPendingApplications] = useState('');
 
-  useEffect(() => {
-    const { uid } = userDetails;
-
-    getUserCollectionData(uid)
-      .then((result) => {
-        if (result) {
-          const { userCollectionData, status } = result;
-          setPendingApplications(userCollectionData);
-        } else {
-          console.log('User collection not found.');
+  const getAgentDetails = async (agentId) => {
+    console.log("agentId", agentId)
+    try {
+      const res = await postApiCall('agents/getdetails', {agentId});
+      const {status, data} = res;
+      if(status === 200){
+        dispatch(setUserDetails(data));
+        if(data.status !== 'pending'){
+          navigate('/dashboard');
         }
-      })
-      .catch((error) => {
-        console.log('Error:', error);
-      });
-  }, []);
-
-
-async function getUserCollectionData(uid) {
-  try {
-    const userCollectionsRef = collection(db, 'users');
-    const q = query(userCollectionsRef, where('uid', '==', uid));
-    const userCollectionsSnapshot = await getDocs(q);
-
-    if (!userCollectionsSnapshot.empty) {
-      const userCollectionData = userCollectionsSnapshot.docs[0].data();
-      const status = userCollectionData.status;
-
-      return { userCollectionData, status };
+      }
+    } catch (error) {
+      console.error("error", error)
+      // alert.error('Login error:', error.message);
     }
+  };
 
-    return null; // User collection not found
-  } catch (error) {
-    console.log('Error fetching user collection data:', error);
-    return null;
-  }
-}
-
+  useEffect(() => {
+    getAgentDetails(userDetails.id)
+  }, []);
 
   return (
     <div className="pending-applications">
       <h2>Pending Applications</h2>
       <div className="pending-application">
             <h3 className="application-id">Application ID: {pendingApplications.uniqueId}</h3>
-            <p className="name">Name: {pendingApplications.name}</p>
-            <p className="email">Email: {pendingApplications.email}</p>
+            <p className="name">Name: {userDetails.username}</p>
+            <p className="email">Email: {userDetails.email}</p>
             <span className="status">
               The application requires additional verification or validation of the provided information, documents, or
               credentials. The pending status indicates that the necessary checks or validations are still in progress.
             </span>
           </div>
+          <Button onClick={()=> getAgentDetails(userDetails.id)}>Check Status</Button>
     </div>
   );
 };
